@@ -47,3 +47,22 @@ Elle a 5 targets:
 - CONNSECMARK: copie d'un cas de sécurité
 
 
+### Mise en pratique
+
+**Le Ping ?**
+
+Quand on a deux machines , une machine peut aller pinger autre machine pour savoir si elle est UP.
+``Ping =  Protocole ICMP``
+
+Empecher les ping en entrée?
+Supposons on travaille sur la machine 172.17.0.2 et une autre machine 172.17.0.1 veut pinger sur notre machine, comment on va 
+empecher le ping?
+
+``iptables -I INPUT -p icmp --icmp-type 8 -j DROP``
+
+**Supprimer une régle précise**
+```
+iptables -L --line-numbers
+iptables -D [TYPE_CHAINE] "num_ligne"
+```
+
