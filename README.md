@@ -9,7 +9,8 @@
 - Pour voir la liste des règles que vous avez: ``sudo iptables -L`` => on a trois groupes (INPUT: pour les paquets rentrants,
   FORWARD: pour les paquets que vous allez rediriger, OUTPUT: pour les paquets sortants)
 - Par défaut on une politique d'acceptation(policy ACCEPT)
-- IPTABLES prend les regles dans l'ordre
+- IPTABLES prend les regles dans l'ordre (L'ordre des regles est important)
+- Le principe pour sécuriser un réseau : on refuse tous entrants/sortants puis on autorise au fur et à mesure des besoins
 
 
 ### Commandes
@@ -51,12 +52,12 @@ Elle a 5 targets:
 
 **Le Ping ?**
 
-Quand on a deux machines , une machine peut aller pinger autre machine pour savoir si elle est UP.
+Quand on a deux machines, une machine peut aller pinger autre machine pour savoir si elle est UP.
 ``Ping =  Protocole ICMP``
 
-Empecher les ping en entrée?
+Empecher les ping en entrée ?
 Supposons on travaille sur la machine 172.17.0.2 et une autre machine 172.17.0.1 veut pinger sur notre machine, comment on va 
-empecher le ping?
+empecher le ping ?
 
 ``iptables -I INPUT -p icmp --icmp-type 8 -j DROP``
 
@@ -65,4 +66,24 @@ empecher le ping?
 iptables -L --line-numbers
 iptables -D [TYPE_CHAINE] "num_ligne"
 ```
+
+**Refuse toute connexion sur le port 8000**
+``iptables -I INPUT -p tcp --dport 8000 -j DROP``
+
+**Accepter le traffic qui vient d'une machine (conf ssh)**
+``iptables -I INPUT -s(source) 127.17.0.1 -p tcp --dport 8000 -j ACCEPT``
+
+**supprimer toutes les regles**
+``iptables -t filter -F ``
+
+**pour laisser l'access à une machine**
+``iptables -A INPUT state --state RELATED,ESTABLISHED -j ACCEPT`` (-A: ajout de la règle à la fin)
+``iptables -A OUTPUT state --state RELATED,ESTABLISHED -j ACCEPT``
+
+**Accepter les ping**
+``iptables -t filter -A INPUT -p icmp -j ACCEPT``
+``iptables -t filter -A OUTPUT -p icmp -j ACCEPT``
+
+
+
 
